@@ -13,8 +13,8 @@ import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin");
-  const [password, setPassword] = useState("bungu");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
@@ -189,7 +189,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="admin"
+                placeholder="Nhập tài khoản (admin)"
                 required
               />
             </div>
@@ -206,7 +206,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="bungu"
+                placeholder="Nhập mật khẩu (bungu)"
                 required
               />
             </div>
