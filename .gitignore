@@ -54,3 +54,5 @@ server.log
 /skills/
 .vercel
 .env*
+git/
+git.zip
