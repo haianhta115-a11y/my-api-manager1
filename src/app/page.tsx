@@ -81,14 +81,15 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"keys" | "ip-lookup" | "crypto-inspector" | "analytics" | "sandbox" | "webhooks" | "security" | "system">("keys");
 
   // Music State & Custom YouTube player
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
   const [customYtInput, setCustomYtInput] = useState("");
-  const [activeYtId, setActiveYtId] = useState("jfKfPfyJRdk");
-  const [activeTrackName, setActiveTrackName] = useState("Lofi Girl Radio");
+  const [activeYtId, setActiveYtId] = useState("96z6HwGncc4");
+  const [activeTrackName, setActiveTrackName] = useState("Sơn Thủy Trùng Dương");
   const [musicModalOpen, setMusicModalOpen] = useState(false);
 
   const STATIONS = [
+    { name: "Sơn Thủy Trùng Dương", url: "96z6HwGncc4" },
     { name: "Lofi Girl Radio", url: "jfKfPfyJRdk" },
     { name: "Cyberpunk Synthwave", url: "4xDzrJKXOOY" },
     { name: "Chillstep Beats", url: "7NOSDKb0HlU" },
@@ -96,7 +97,7 @@ export default function DashboardPage() {
   ];
 
   const extractYoutubeId = (input: string): string => {
-    if (!input) return "jfKfPfyJRdk";
+    if (!input) return "96z6HwGncc4";
     const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = input.match(regExp);
     return match && match[1].length === 11 ? match[1] : input.trim();
