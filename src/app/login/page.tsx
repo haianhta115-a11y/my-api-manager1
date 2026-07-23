@@ -13,8 +13,8 @@ import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin");
+  const [email, setEmail] = useState("admin");
+  const [password, setPassword] = useState("bungu");
   const [isLoading, setIsLoading] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
@@ -181,15 +181,15 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-emerald-400">
-                Email Address
+                Tài khoản / Admin
               </Label>
               <Input
                 id="email"
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="admin@example.com"
+                placeholder="admin"
                 required
               />
             </div>
@@ -197,7 +197,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wider text-emerald-400">
-                  Password
+                  Mật khẩu
                 </Label>
               </div>
               <Input
@@ -206,7 +206,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="••••••••"
+                placeholder="bungu"
                 required
               />
             </div>
@@ -229,15 +229,15 @@ export default function LoginPage() {
               ) : (
                 <>
                   <LogIn className="w-4 h-4 mr-2" />
-                  Initialize Link
+                  Đăng Nhập
                 </>
               )}
             </Button>
           </form>
           
           <div className="mt-8 text-center border-t border-white/10 pt-6">
-            <p className="text-xs text-white/40 uppercase tracking-widest font-mono">
-              Demo: admin@example.com / admin
+            <p className="text-xs text-emerald-400 font-bold uppercase tracking-widest font-mono">
+              Tài khoản: admin | Mật khẩu: bungu
             </p>
           </div>
         </motion.div>

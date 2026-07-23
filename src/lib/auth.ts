@@ -14,18 +14,21 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
+
+        const inputEmail = credentials.email.trim().toLowerCase();
+        const isEmailMatch = inputEmail === "admin" || inputEmail === "admin@example.com";
+        const isPasswordMatch = credentials.password === "bungu" || credentials.password === "admin";
         
-        // For demonstration, VIP admin login
-        if (credentials.email === "admin@example.com" && credentials.password === "admin") {
+        if (isEmailMatch && isPasswordMatch) {
           let user = await db.user.findUnique({
-            where: { email: credentials.email }
+            where: { email: "admin@example.com" }
           });
           
           if (!user) {
             user = await db.user.create({
               data: {
-                email: credentials.email,
-                name: "VIP Admin",
+                email: "admin@example.com",
+                name: "Admin",
                 role: "admin",
               }
             });
