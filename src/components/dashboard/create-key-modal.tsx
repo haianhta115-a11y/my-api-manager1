@@ -8,10 +8,15 @@ import {
   Copy,
   Check,
   ShieldCheck,
+  Globe,
+  Tag,
+  FileText,
 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +34,6 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-/* ─── Types ─── */
 interface CreateKeyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,7 +46,6 @@ export interface CreatedKeyData {
   plainKey: string;
 }
 
-/* ─── Create Form Modal ─── */
 export function CreateKeyModal({
   open,
   onOpenChange,
@@ -50,17 +53,30 @@ export function CreateKeyModal({
 }: CreateKeyModalProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [name, setName] = useState("");
+  const [environment, setEnvironment] = useState("production");
   const [expiration, setExpiration] = useState("30d");
   const [permissions, setPermissions] = useState("read");
   const [rateLimit, setRateLimit] = useState("60");
+  const [licenseType, setLicenseType] = useState("lifetime");
+  const [maxDevices, setMaxDevices] = useState("1");
+  const [allowedIps, setAllowedIps] = useState("");
+  const [tags, setTags] = useState("");
+  const [notes, setNotes] = useState("");
+
   const [createdKey, setCreatedKey] = useState<CreatedKeyData | null>(null);
   const [copied, setCopied] = useState(false);
 
   const resetForm = () => {
     setName("");
+    setEnvironment("production");
     setExpiration("30d");
     setPermissions("read");
     setRateLimit("60");
+    setLicenseType("lifetime");
+    setMaxDevices("1");
+    setAllowedIps("");
+    setTags("");
+    setNotes("");
     setCreatedKey(null);
     setCopied(false);
   };
@@ -76,9 +92,15 @@ export function CreateKeyModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
+          environment,
           expiration,
           permissions,
           rateLimit: parseInt(rateLimit) || 60,
+          licenseType,
+          maxDevices: parseInt(maxDevices) || 1,
+          allowedIps: allowedIps.trim(),
+          tags: tags.trim(),
+          notes: notes.trim(),
         }),
       });
 
@@ -113,16 +135,15 @@ export function CreateKeyModal({
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleModalClose = (open: boolean) => {
-    if (!open) resetForm();
-    onOpenChange(open);
+  const handleModalClose = (openState: boolean) => {
+    if (!openState) resetForm();
+    onOpenChange(openState);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleModalClose}>
       <AnimatePresence mode="wait">
         {!createdKey ? (
-          /* ─── Create Form ─── */
           <motion.div
             key="form"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -130,140 +151,195 @@ export function CreateKeyModal({
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
-            <DialogContent className="sm:max-w-md bg-card border-white/10">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-emerald-400" />
-                  Create New API Key
-                </DialogTitle>
-                <DialogDescription>
-                  Generate a new API key with custom permissions and rate limits.
-                </DialogDescription>
-              </DialogHeader>
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Key Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="key-name">Key Name</Label>
-                  <Input
-                    id="key-name"
-                    placeholder="e.g. Production API, Staging, CI/CD"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20"
-                    autoFocus
-                  />
+            <DialogContent className="sm:max-w-3xl bg-card border-white/10 p-0 overflow-hidden flex flex-col md:flex-row gap-0 max-h-[90vh] overflow-y-auto">
+              {/* Anime Side */}
+              <div className="hidden md:block w-1/3 relative bg-black border-r border-white/5 min-h-[500px]">
+                <Image
+                  src="/anime-create.png"
+                  alt="Create Key Anime"
+                  fill
+                  className="object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-xl font-bold text-white mb-1">API Guardian Pro</h3>
+                  <p className="text-xs text-white/60">Issue enterprise credentials with environment scope and IP whitelist.</p>
                 </div>
+              </div>
 
-                {/* Expiration */}
-                <div className="space-y-2">
-                  <Label>Expiration</Label>
-                  <Select value={expiration} onValueChange={setExpiration}>
-                    <SelectTrigger className="bg-white/5 border-white/10 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
-                      <SelectItem value="7d">7 days</SelectItem>
-                      <SelectItem value="30d">30 days</SelectItem>
-                      <SelectItem value="90d">90 days</SelectItem>
-                      <SelectItem value="never">Never expires</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Form Side */}
+              <div className="w-full md:w-2/3 p-6 sm:p-8">
+                <DialogHeader className="mb-4">
+                  <DialogTitle className="flex items-center gap-2">
+                    <KeyRound className="w-5 h-5 text-emerald-400" />
+                    Create New API Key
+                  </DialogTitle>
+                  <DialogDescription>
+                    Configure environment, rate limits, license rules, and security restrictions.
+                  </DialogDescription>
+                </DialogHeader>
 
-                {/* Permissions */}
-                <div className="space-y-2">
-                  <Label>Permissions</Label>
-                  <Select value={permissions} onValueChange={setPermissions}>
-                    <SelectTrigger className="bg-white/5 border-white/10 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
-                      <SelectItem value="read">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                          Read — Data access only
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="write">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-sky-400" />
-                          Write — Read + mutations
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="admin">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-purple-400" />
-                          Admin — Full access
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Name & Environment Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="key-name" className="text-xs">Key Name</Label>
+                      <Input
+                        id="key-name"
+                        placeholder="e.g. Production API v2"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="bg-white/5 border-white/10 text-xs"
+                        autoFocus
+                      />
+                    </div>
 
-                {/* Rate Limit */}
-                <div className="space-y-2">
-                  <Label htmlFor="rate-limit">Rate Limit (requests/min)</Label>
-                  <Input
-                    id="rate-limit"
-                    type="number"
-                    min="1"
-                    max="10000"
-                    value={rateLimit}
-                    onChange={(e) => setRateLimit(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 font-mono-key"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Max 10,000 requests per minute
-                  </p>
-                </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Target Environment</Label>
+                      <Select value={environment} onValueChange={setEnvironment}>
+                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-white/10">
+                          <SelectItem value="production">Production (sk_live_)</SelectItem>
+                          <SelectItem value="staging">Staging (sk_stg_)</SelectItem>
+                          <SelectItem value="development">Development (sk_test_)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-                <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => handleModalClose(false)}
-                    disabled={isCreating}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={!name.trim() || isCreating}
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium min-w-[120px]"
-                  >
-                    {isCreating ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            className="opacity-20"
-                          />
-                          <path
-                            d="M12 2a10 10 0 019.95 9"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </motion.div>
-                    ) : (
-                      "Create Key"
-                    )}
-                  </Button>
-                </DialogFooter>
-              </form>
+                  {/* Expiration & Permissions Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Expiration</Label>
+                      <Select value={expiration} onValueChange={setExpiration}>
+                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-white/10">
+                          <SelectItem value="7d">7 days</SelectItem>
+                          <SelectItem value="30d">30 days</SelectItem>
+                          <SelectItem value="90d">90 days</SelectItem>
+                          <SelectItem value="never">Never expires</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Permissions</Label>
+                      <Select value={permissions} onValueChange={setPermissions}>
+                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-white/10">
+                          <SelectItem value="read">Read — Access only</SelectItem>
+                          <SelectItem value="write">Write — Read + Mutations</SelectItem>
+                          <SelectItem value="admin">Admin — Full Root Control</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* License Type & Max Devices Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">License Model</Label>
+                      <Select value={licenseType} onValueChange={setLicenseType}>
+                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-white/10">
+                          <SelectItem value="trial">Trial</SelectItem>
+                          <SelectItem value="lifetime">Lifetime</SelectItem>
+                          <SelectItem value="subscription">Subscription</SelectItem>
+                          <SelectItem value="concurrent">Concurrent</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="max-devices" className="text-xs">Max Devices (HWID)</Label>
+                      <Input
+                        id="max-devices"
+                        type="number"
+                        min="1"
+                        max="100"
+                        value={maxDevices}
+                        onChange={(e) => setMaxDevices(e.target.value)}
+                        className="bg-white/5 border-white/10 text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Rate Limit & IP Whitelist Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="rate-limit" className="text-xs">Rate Limit (req/min)</Label>
+                      <Input
+                        id="rate-limit"
+                        type="number"
+                        min="1"
+                        max="10000"
+                        value={rateLimit}
+                        onChange={(e) => setRateLimit(e.target.value)}
+                        className="bg-white/5 border-white/10 text-xs font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="allowed-ips" className="text-xs flex items-center gap-1">
+                        <Globe className="w-3 h-3 text-sky-400" />
+                        Allowed IPs (Comma-separated)
+                      </Label>
+                      <Input
+                        id="allowed-ips"
+                        placeholder="192.168.1.1, 10.0.0.1 (Optional)"
+                        value={allowedIps}
+                        onChange={(e) => setAllowedIps(e.target.value)}
+                        className="bg-white/5 border-white/10 text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="key-tags" className="text-xs flex items-center gap-1">
+                      <Tag className="w-3 h-3 text-purple-400" />
+                      Tags (Comma-separated)
+                    </Label>
+                    <Input
+                      id="key-tags"
+                      placeholder="client-v2, vip, desktop"
+                      value={tags}
+                      onChange={(e) => setTags(e.target.value)}
+                      className="bg-white/5 border-white/10 text-xs"
+                    />
+                  </div>
+
+                  <DialogFooter className="mt-4">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleModalClose(false)}
+                      disabled={isCreating}
+                      className="text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={!name.trim() || isCreating}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs min-w-[110px]"
+                    >
+                      {isCreating ? "Creating..." : "Create API Key"}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </div>
             </DialogContent>
           </motion.div>
         ) : (
-          /* ─── Secret Key Reveal ─── */
           <motion.div
             key="secret"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -271,42 +347,29 @@ export function CreateKeyModal({
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
-            <DialogContent
-              className="sm:max-w-lg bg-card border-white/10"
-              showCloseButton={false}
-            >
+            <DialogContent className="sm:max-w-lg bg-card border-white/10" showCloseButton={false}>
               <DialogHeader>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
                   <DialogTitle>Key Created Successfully</DialogTitle>
                 </div>
-                <DialogDescription className="sr-only">
-                  Your new API key has been generated. Copy it now.
-                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4">
-                {/* Warning */}
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                   <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-amber-300">
-                      Save your API key now
-                    </p>
+                    <p className="text-sm font-medium text-amber-300">Save your API key now</p>
                     <p className="text-xs text-amber-400/80 mt-1">
-                      For security, this is the <strong>only time</strong> you
-                      will see this key. You won&apos;t be able to view it again.
+                      For security, this is the <strong>only time</strong> you will see this key.
                     </p>
                   </div>
                 </div>
 
-                {/* Key Display */}
                 <div className="relative">
                   <div className="bg-black/40 border border-white/10 rounded-lg p-4">
-                    <p className="text-xs text-muted-foreground mb-1.5 font-medium">
-                      {createdKey.name}
-                    </p>
-                    <code className="font-mono-key text-sm text-emerald-400 break-all leading-relaxed block">
+                    <p className="text-xs text-muted-foreground mb-1.5 font-medium">{createdKey.name}</p>
+                    <code className="font-mono-key text-sm text-emerald-400 break-all block">
                       {createdKey.plainKey}
                     </code>
                   </div>
@@ -315,31 +378,8 @@ export function CreateKeyModal({
                     className="absolute top-3 right-3 bg-emerald-600 hover:bg-emerald-500 text-white h-7 text-xs"
                     onClick={handleCopyFullKey}
                   >
-                    <AnimatePresence mode="wait">
-                      {copied ? (
-                        <motion.span
-                          key="copied"
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.5 }}
-                          className="flex items-center gap-1"
-                        >
-                          <Check className="h-3 w-3" />
-                          Copied
-                        </motion.span>
-                      ) : (
-                        <motion.span
-                          key="copy"
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.5 }}
-                          className="flex items-center gap-1"
-                        >
-                          <Copy className="h-3 w-3" />
-                          Copy
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
+                    {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
+                    {copied ? "Copied" : "Copy"}
                   </Button>
                 </div>
               </div>
@@ -347,12 +387,10 @@ export function CreateKeyModal({
               <DialogFooter>
                 <Button
                   onClick={() => {
-                    if (!copied) {
-                      handleCopyFullKey();
-                    }
+                    if (!copied) handleCopyFullKey();
                     handleModalClose(false);
                   }}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium w-full sm:w-auto"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium w-full text-xs"
                 >
                   {copied ? "Done" : "Copy & Done"}
                 </Button>

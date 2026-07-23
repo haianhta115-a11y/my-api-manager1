@@ -3,23 +3,136 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String?
+  email         String?    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String     @default("user")
+  balance       Float      @default(0.0)
+  themePref     String     @default("dark")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+  accounts      Account[]
+  apiKeys       ApiKey[]
+  auditLogs     AuditLog[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model ApiKey {
-  id            String   @id @default(cuid())
-  name          String
-  key           String   @unique
-  keyPrefix     String   // e.g. "sk_live_"
-  keySuffix     String   // last 4 chars for display
-  status        String   @default("active") // "active" | "revoked" | "expired"
-  permissions   String   @default("read")   // "read" | "write" | "admin"
-  rateLimit     Int      @default(60)       // requests per minute
-  expiration    String   @default("never")  // "7d" | "30d" | "90d" | "never"
-  expiresAt     DateTime?
-  lastUsedAt    DateTime?
-  requestCount  Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String          @id @default(cuid())
+  name           String
+  key            String          @unique
+  keyPrefix      String
+  keySuffix      String
+  status         String          @default("active")
+  permissions    String          @default("read")
+  environment    String          @default("production")
+  allowedIps     String?
+  tags           String?
+  notes          String?
+  licenseType    String          @default("lifetime")
+  maxDevices     Int             @default(1)
+  hwid           String?
+  hwidResetCount Int             @default(0)
+  maxHwidResets  Int             @default(1)
+  rateLimit      Int             @default(60)
+  expiration     String          @default("never")
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  lastIp         String?
+  lastCountry    String?
+  requestCount   Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requestLogs    ApiRequestLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   String
+  ipAddress String?
+  createdAt DateTime @default(now())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Webhook {
+  id        String       @id @default(cuid())
+  name      String
+  url       String
+  secret    String?
+  events    String
+  status    String       @default("active")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  userId    String?
+  logs      WebhookLog[]
+}
+
+model WebhookLog {
+  id         String   @id @default(cuid())
+  webhookId  String
+  event      String
+  statusCode Int
+  payload    String
+  response   String?
+  createdAt  DateTime @default(now())
+  webhook    Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+}
+
+model ApiRequestLog {
+  id         String   @id @default(cuid())
+  apiKeyId   String?
+  endpoint   String
+  statusCode Int
+  latencyMs  Int      @default(0)
+  ipAddress  String?
+  country    String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  apiKey     ApiKey?  @relation(fields: [apiKeyId], references: [id])
 }
