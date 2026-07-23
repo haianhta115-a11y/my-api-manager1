@@ -178,18 +178,19 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-5" autoComplete="off">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-emerald-400">
-                Tài khoản / Admin
+                Tài khoản
               </Label>
               <Input
                 id="email"
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="off"
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="Nhập tài khoản (admin)"
+                placeholder="Nhập tài khoản..."
                 required
               />
             </div>
@@ -205,8 +206,9 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-11 text-white placeholder-white/30"
-                placeholder="Nhập mật khẩu (bungu)"
+                placeholder="••••••••"
                 required
               />
             </div>
@@ -234,12 +236,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-          
-          <div className="mt-8 text-center border-t border-white/10 pt-6">
-            <p className="text-xs text-emerald-400 font-bold uppercase tracking-widest font-mono">
-              Tài khoản: admin | Mật khẩu: bungu
-            </p>
-          </div>
         </motion.div>
       </div>
     </div>
