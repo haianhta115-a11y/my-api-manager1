@@ -78,25 +78,6 @@ export default function DashboardPage() {
   ];
   const currentStation = STATIONS[stationIdx];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.replace("/login");
-  }, [status, router]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (status === "loading") {
-        router.replace("/login");
-      }
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [status, router]);
-
-  if (status === "unauthenticated") return null;
-
   // Modal State
   const [createOpen, setCreateOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
@@ -132,6 +113,23 @@ export default function DashboardPage() {
     }
   }, [status]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.replace("/login");
+  }, [status, router]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (status === "loading") {
+        router.replace("/login");
+      }
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [status, router]);
+
   useEffect(() => { startTransition(() => { fetchAll(); }); }, [fetchAll]);
 
   const handleKeyCreated = () => { fetchAll(); };
@@ -150,7 +148,7 @@ export default function DashboardPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  if (status === "loading") {
+  if (status === "loading" || status === "unauthenticated") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-emerald-400">
         <motion.div
