@@ -16,13 +16,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("admin");
   const [isLoading, setIsLoading] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
 
   const STATIONS = [
-    { name: "Lofi Girl Radio", url: "jfKfPfyJRdk" },
-    { name: "Cyberpunk Synthwave", url: "4xDzrJKXOOY" },
-    { name: "Chillstep", url: "7NOSDKb0HlU" },
+    { name: "Sơn Thủy Trùng Dương", url: "96z6HwGncc4" },
   ];
   const currentStation = STATIONS[stationIdx];
 
@@ -62,25 +60,25 @@ export default function LoginPage() {
           alt="Anime Cyberpunk Background" 
           fill 
           priority
-          className="object-cover opacity-60 filter blur-sm dark:opacity-60 light:opacity-20"
+          className="object-cover opacity-60 filter blur-sm dark:opacity-60 light:opacity-20 hidden sm:block"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-emerald-900/30" />
 
-        {/* Floating animated neon orbs */}
+        {/* Floating animated neon orbs (hidden on mobile to prevent GPU lag) */}
         <motion.div
           animate={{ x: [0, 60, -40, 0], y: [0, -50, 30, 0], scale: [1, 1.2, 0.9, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-20 left-1/4 w-80 h-80 rounded-full bg-emerald-500/10 blur-[100px]"
+          className="hidden md:block absolute -top-20 left-1/4 w-80 h-80 rounded-full bg-emerald-500/10 blur-[100px]"
         />
         <motion.div
           animate={{ x: [0, -50, 60, 0], y: [0, 40, -30, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-purple-500/10 blur-[120px]"
+          className="hidden md:block absolute bottom-10 right-10 w-96 h-96 rounded-full bg-purple-500/10 blur-[120px]"
         />
         <motion.div
           animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-sky-500/5 blur-[150px]"
+          className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-sky-500/5 blur-[150px]"
         />
       </div>
 

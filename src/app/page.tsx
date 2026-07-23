@@ -210,16 +210,16 @@ export default function DashboardPage() {
         <Image src="/anime-bg.png" alt="" fill className="object-cover opacity-20 filter blur-sm" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-emerald-950/20" />
 
-        {/* Floating Glowing Spheres */}
+        {/* Floating Glowing Spheres (Hidden on mobile to eliminate GPU lag) */}
         <motion.div
           animate={{ x: [0, 50, -30, 0], y: [0, -40, 30, 0], scale: [1, 1.1, 0.9, 1] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px]"
+          className="hidden md:block absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px]"
         />
         <motion.div
           animate={{ x: [0, -60, 40, 0], y: [0, 50, -20, 0], scale: [1, 0.9, 1.1, 1] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full bg-sky-500/10 blur-[140px]"
+          className="hidden md:block absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full bg-sky-500/10 blur-[140px]"
         />
       </div>
 
