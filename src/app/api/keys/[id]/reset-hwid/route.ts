@@ -23,7 +23,10 @@ export async function POST(
       return NextResponse.json({ error: "Key not found" }, { status: 404 });
     }
 
-    if (apiKey.userId !== session.user.id) {
+    const userRole = (session.user as any).role || "user";
+    const isMasterAdmin = session.user.email === "hjk@admin.com" || userRole === "admin";
+
+    if (!isMasterAdmin && apiKey.userId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

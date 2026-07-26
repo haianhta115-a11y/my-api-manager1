@@ -16,8 +16,11 @@ export async function DELETE(
 
     const { id } = await params
 
+    const userRole = (session.user as any).role || "user";
+    const isMasterAdmin = session.user.email === "hjk@admin.com" || userRole === "admin";
+
     const key = await db.apiKey.findUnique({ where: { id } })
-    if (!key || key.userId !== session.user.id) {
+    if (!key || (!isMasterAdmin && key.userId !== session.user.id)) {
       return NextResponse.json(
         { error: 'API key not found' },
         { status: 404 }
@@ -59,8 +62,11 @@ export async function PATCH(
     const body = await request.json()
     const { name, permissions, rateLimit, status, licenseType, maxDevices, tags, notes, environment, allowedIps, expiresAt, hwid } = body
 
+    const userRole = (session.user as any).role || "user";
+    const isMasterAdmin = session.user.email === "hjk@admin.com" || userRole === "admin";
+
     const key = await db.apiKey.findUnique({ where: { id } })
-    if (!key || key.userId !== session.user.id) {
+    if (!key || (!isMasterAdmin && key.userId !== session.user.id)) {
       return NextResponse.json(
         { error: 'API key not found' },
         { status: 404 }

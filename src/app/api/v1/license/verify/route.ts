@@ -90,8 +90,19 @@ export async function POST(request: Request) {
     }
 
     // 1. Find key in DB
-    const apiKey = await db.apiKey.findUnique({
-      where: { key: key.trim() },
+    const cleanKey = key.trim();
+    const apiKey = await db.apiKey.findFirst({
+      where: {
+        OR: [
+          { key: cleanKey },
+          { keyPrefix: cleanKey },
+        ]
+      },
+      include: {
+        user: {
+          select: { status: true, role: true }
+        }
+      }
     });
 
     if (!apiKey) {
@@ -99,6 +110,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { valid: false, code: "INVALID_KEY", message: "License key does not exist." },
         { status: 404 }
+      );
+    }
+
+    if (apiKey.user && apiKey.user.status === "blocked") {
+      responseStatusCode = 403;
+      return NextResponse.json(
+        { valid: false, code: "USER_BLOCKED", message: "Tài khoản của người tạo Key này đã bị Admin KHÓA vĩnh viễn." },
+        { status: 403 }
       );
     }
 

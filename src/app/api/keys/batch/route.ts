@@ -22,8 +22,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid batch action' }, { status: 400 })
     }
 
+    const userRole = (session.user as any).role || "user";
+    const isMasterAdmin = session.user.email === "hjk@admin.com" || userRole === "admin";
+
+    const keysWhere: Record<string, unknown> = { id: { in: ids } };
+    if (!isMasterAdmin) {
+      keysWhere.userId = session.user.id;
+    }
+
     const keys = await db.apiKey.findMany({
-      where: { id: { in: ids }, userId: session.user.id },
+      where: keysWhere,
     })
 
     if (keys.length === 0) {
