@@ -213,31 +213,14 @@ export function SecurityView() {
           <DialogHeader>
             <DialogTitle className="text-base font-bold flex items-center gap-2 text-destructive">
               <AlertTriangle className="w-5 h-5 text-destructive" />
-              Confirm Emergency {killAction === "lock" ? "Killswitch Lock" : "Unfreeze"}
+              Confirm Emergency {killAction === "lock" ? "Freeze All Keys" : "Unfreeze All Keys"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
               {killAction === "lock"
-                ? "This action will immediately set the status of targeted keys to 'LOCKED'. Connected applications using these keys will fail verification until un-frozen."
-                : "This action will restore locked keys back to 'ACTIVE' status."}
+                ? "Hành động này sẽ lập tức khóa (LOCKED) toàn bộ API Key trên hệ thống. Mọi ứng dụng kết nối sẽ bị từ chối xác thực cho đến khi bạn gỡ khóa."
+                : "Hành động này sẽ khôi phục toàn bộ API Key bị khóa trở lại trạng thái hoạt động (ACTIVE)."}
             </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            <div>
-              <label className="text-xs text-muted-foreground block mb-1">Target Environment</label>
-              <Select value={targetEnv} onValueChange={setTargetEnv}>
-                <SelectTrigger className="bg-white/5 border-white/10 text-xs">
-                  <SelectValue placeholder="Target Environment" />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-white/10">
-                  <SelectItem value="all">All Environments (Global Lockdown)</SelectItem>
-                  <SelectItem value="production">Production Only</SelectItem>
-                  <SelectItem value="staging">Staging Only</SelectItem>
-                  <SelectItem value="development">Development Only</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
 
           <DialogFooter className="gap-2">
             <Button variant="ghost" size="sm" onClick={() => setKillswitchOpen(false)} className="text-xs">
