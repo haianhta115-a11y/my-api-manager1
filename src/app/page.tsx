@@ -24,6 +24,8 @@ import {
   Check,
   Link2,
   Users,
+  Code2,
+  Monitor,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -56,13 +58,16 @@ import { UsersView } from "@/components/dashboard/users-view";
 import { SecurityView } from "@/components/dashboard/security-view";
 import { ExportImportModal } from "@/components/dashboard/export-import-modal";
 import { AntiCheatGuard } from "@/components/dashboard/anti-cheat-guard";
+import { SdkModal } from "@/components/dashboard/sdk-modal";
+import { ClientSimulator } from "@/components/dashboard/client-simulator";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"keys" | "users" | "security">("keys");
+  const [activeTab, setActiveTab] = useState<"keys" | "users" | "security" | "client-test">("keys");
+  const [sdkOpen, setSdkOpen] = useState(false);
 
   const [keys, setKeys] = useState<ApiKeyItem[]>([]);
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
@@ -316,6 +321,16 @@ export default function DashboardPage() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setSdkOpen(true)}
+                className="border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-xs hidden md:flex items-center gap-1.5"
+              >
+                <Code2 className="w-4 h-4 text-emerald-400" />
+                SDK & Anti-Crack C++
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setBulkOpen(true)}
                 className="border-border text-foreground hover:bg-accent hidden sm:flex items-center gap-1.5 btn-shimmer"
               >
@@ -361,6 +376,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 pb-2 border-t border-border">
             {[
               { id: "keys", label: "API Keys Grid", icon: KeyRound, count: keys.length },
+              { id: "client-test", label: "Giả Lập App Client (Check Key)", icon: Monitor },
               ...(((session?.user as any)?.role === "admin" || session?.user?.email === "hjk@admin.com")
                 ? [{ id: "users", label: "Quản Lý Tài Khoản (Admin)", icon: Users }]
                 : []),
@@ -447,6 +463,18 @@ export default function DashboardPage() {
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
               />
+            </motion.div>
+          )}
+
+          {activeTab === "client-test" && (
+            <motion.div
+              key="client-test-tab"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ClientSimulator />
             </motion.div>
           )}
 
@@ -564,6 +592,9 @@ export default function DashboardPage() {
 
       {/* Anti-Cheat & Fraud Defense Guard */}
       <AntiCheatGuard />
+
+      {/* C++ Native & Client SDK Modal */}
+      <SdkModal open={sdkOpen} onOpenChange={setSdkOpen} />
     </div>
   );
 }
