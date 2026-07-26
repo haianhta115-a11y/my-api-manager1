@@ -89,13 +89,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Find key in DB
+    // 1. Find key in DB (supports full key, masked reference, ID, or key name)
     const cleanKey = key.trim();
+    let extractedSuffix = "";
+    if (cleanKey.includes("••") || cleanKey.includes("..") || cleanKey.includes("*")) {
+      extractedSuffix = cleanKey.slice(-4);
+    }
+
     const apiKey = await db.apiKey.findFirst({
       where: {
         OR: [
           { key: cleanKey },
-          { keyPrefix: cleanKey },
+          { id: cleanKey },
+          { name: cleanKey },
+          ...(extractedSuffix ? [{ keySuffix: extractedSuffix }] : []),
         ]
       },
       include: {
