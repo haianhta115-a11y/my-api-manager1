@@ -23,6 +23,7 @@ import {
   Play,
   Check,
   Link2,
+  Users,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -48,6 +49,7 @@ import { RevokeDialog, DeleteDialog } from "@/components/dashboard/confirm-dialo
 import { BatchToolbar } from "@/components/dashboard/batch-toolbar";
 import { KeyDetailModal } from "@/components/dashboard/key-detail-modal";
 import { ExpirationModal } from "@/components/dashboard/expiration-modal";
+import { UsersModal } from "@/components/dashboard/users-modal";
 
 // Premium Views
 import { SecurityView } from "@/components/dashboard/security-view";
@@ -112,6 +114,7 @@ export default function DashboardPage() {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [logsOpen, setLogsOpen] = useState(false);
   const [exportImportOpen, setExportImportOpen] = useState(false);
+  const [usersModalOpen, setUsersModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<ApiKeyItem | null>(null);
   const [revokeTarget, setRevokeTarget] = useState<ApiKeyItem | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ApiKeyItem | null>(null);
@@ -273,6 +276,19 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Admin Users & IP Management */}
+              {((session?.user as any)?.role === "admin" || session?.user?.email === "hjk@admin.com") && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setUsersModalOpen(true)}
+                  className="border-emerald-500/40 text-xs text-emerald-400 hover:bg-emerald-500/10 font-bold flex items-center gap-1.5"
+                >
+                  <Users className="w-3.5 h-3.5 text-emerald-400" />
+                  Tạo/Quản Lý Tài Khoản & IP
+                </Button>
+              )}
+
               {/* Export Backup Trigger */}
               <Button
                 variant="outline"
@@ -527,6 +543,9 @@ export default function DashboardPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Admin Users & IP Management Modal */}
+      <UsersModal open={usersModalOpen} onOpenChange={setUsersModalOpen} />
     </div>
   );
 }

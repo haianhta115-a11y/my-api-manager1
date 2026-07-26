@@ -7,7 +7,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "admin@example.com" },
+        email: { label: "Account / Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
@@ -16,42 +16,87 @@ export const authOptions: NextAuthOptions = {
         }
 
         const inputEmail = credentials.email.trim().toLowerCase();
-        const isEmailMatch = inputEmail === "admin" || inputEmail === "admin@example.com";
-        const isPasswordMatch = credentials.password === "bungu" || credentials.password === "admin";
-        
-        if (isEmailMatch && isPasswordMatch) {
-          let user = await db.user.findUnique({
-            where: { email: "admin@example.com" }
+        const inputPassword = credentials.password.trim();
+
+        // 1. Admin Master Account check: hjk / haianh
+        const isAdminMatch =
+          (inputEmail === "hjk" || inputEmail === "hjk@admin.com" || inputEmail === "admin") &&
+          (inputPassword === "haianh" || inputPassword === "bungu" || inputPassword === "admin");
+
+        if (isAdminMatch) {
+          let adminUser = await db.user.findFirst({
+            where: {
+              OR: [
+                { email: "hjk@admin.com" },
+                { name: "hjk" },
+                { role: "admin" }
+              ]
+            }
           });
-          
-          if (!user) {
-            user = await db.user.create({
+
+          if (!adminUser) {
+            adminUser = await db.user.create({
               data: {
-                email: "admin@example.com",
-                name: "Admin",
+                email: "hjk@admin.com",
+                name: "hjk",
+                password: "haianh",
                 role: "admin",
+                status: "active"
               }
             });
           }
-          
+
+          return {
+            id: adminUser.id,
+            email: adminUser.email,
+            name: adminUser.name || "hjk",
+            role: "admin",
+          };
+        }
+
+        // 2. Normal Account / Sub-Account check from DB
+        const user = await db.user.findFirst({
+          where: {
+            OR: [
+              { email: inputEmail },
+              { name: inputEmail }
+            ]
+          }
+        });
+
+        if (user && user.password === inputPassword) {
+          if (user.status === "blocked" || user.status === "kicked") {
+            throw new Error("Tài khoản này đã bị khóa hoặc thu hồi truy cập.");
+          }
+
           return {
             id: user.id,
             email: user.email,
-            name: user.name,
+            name: user.name || inputEmail,
+            role: user.role || "user",
           };
         }
-        
+
         return null;
       }
     })
   ],
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days persistent login session
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role || "user";
+        token.sub = user.id;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub as string;
+        (session.user as any).role = token.role as string;
       }
       return session;
     }

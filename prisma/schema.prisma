@@ -41,6 +41,7 @@ model User {
   image         String?
   password      String?
   role          String     @default("user")
+  status        String     @default("active")
   balance       Float      @default(0.0)
   themePref     String     @default("dark")
   createdAt     DateTime   @default(now())
@@ -49,6 +50,13 @@ model User {
   apiKeys       ApiKey[]
   auditLogs     AuditLog[]
   sessions      Session[]
+}
+
+model BlockedIp {
+  id        String   @id @default(cuid())
+  ipAddress String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
 }
 
 model VerificationToken {

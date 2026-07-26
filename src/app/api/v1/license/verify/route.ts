@@ -60,6 +60,19 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { key, hwid, app_name = "ClientApp", client_version = "1.0.0" } = body;
 
+    // 0. Check Global Blocked IP Table
+    const isGlobalBlocked = await db.blockedIp.findUnique({
+      where: { ipAddress: clientIp }
+    });
+
+    if (isGlobalBlocked) {
+      responseStatusCode = 403;
+      return NextResponse.json(
+        { valid: false, code: "IP_BLOCKED_BY_ADMIN", message: `Địa chỉ IP ${clientIp} đã bị Admin khóa khỏi hệ thống.` },
+        { status: 403 }
+      );
+    }
+
     if (!key || typeof key !== "string") {
       responseStatusCode = 400;
       return NextResponse.json(
