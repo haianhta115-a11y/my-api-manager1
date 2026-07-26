@@ -52,6 +52,7 @@ import { ExpirationModal } from "@/components/dashboard/expiration-modal";
 import { UsersModal } from "@/components/dashboard/users-modal";
 
 // Premium Views
+import { UsersView } from "@/components/dashboard/users-view";
 import { SecurityView } from "@/components/dashboard/security-view";
 import { ExportImportModal } from "@/components/dashboard/export-import-modal";
 import { AntiCheatGuard } from "@/components/dashboard/anti-cheat-guard";
@@ -61,6 +62,7 @@ export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<"keys" | "users" | "security">("keys");
 
   const [keys, setKeys] = useState<ApiKeyItem[]>([]);
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
@@ -362,6 +364,9 @@ export default function DashboardPage() {
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 pb-2 border-t border-border">
             {[
               { id: "keys", label: "API Keys Grid", icon: KeyRound, count: keys.length },
+              ...(((session?.user as any)?.role === "admin" || session?.user?.email === "hjk@admin.com")
+                ? [{ id: "users", label: "Quản Lý Tài Khoản (Admin)", icon: Users }]
+                : []),
               { id: "security", label: "Security Audit & Killswitch", icon: ShieldCheck },
             ].map((tab) => {
               const Icon = tab.icon;
@@ -445,6 +450,18 @@ export default function DashboardPage() {
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
               />
+            </motion.div>
+          )}
+
+          {activeTab === "users" && (
+            <motion.div
+              key="users-tab"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <UsersView />
             </motion.div>
           )}
 
