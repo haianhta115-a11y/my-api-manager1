@@ -19,6 +19,7 @@ import {
   Calendar,
   Crown,
   ZapOff,
+  User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,11 @@ export type ApiKeyItem = {
   hwid?: string | null;
   createdAt: string;
   updatedAt: string;
+  user?: {
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+  } | null;
 };
 
 interface KeysTableProps {
@@ -200,9 +206,17 @@ function KeyRow({
       {/* Name & Env */}
       <div className="flex-shrink-0 w-full sm:w-44 space-y-1">
         <div className="flex items-center gap-1.5">
-          <Badge variant="outline" className={`text-[9px] px-1 py-0 h-3.5 ${envConfig.className}`}>
-            {envConfig.label}
-          </Badge>
+          {keyItem.user?.role === "admin" || keyItem.user?.email === "hjk@admin.com" ? (
+            <Badge className="bg-amber-500/15 border-amber-500/30 text-amber-400 text-[9px] px-1.5 py-0.5 h-4 gap-0.5 font-bold shrink-0">
+              <Crown className="w-2.5 h-2.5 text-amber-400" />
+              Admin
+            </Badge>
+          ) : (
+            <Badge className="bg-emerald-500/15 border-emerald-500/30 text-emerald-400 text-[9px] px-1.5 py-0.5 h-4 gap-0.5 font-semibold shrink-0">
+              <User className="w-2.5 h-2.5 text-emerald-400" />
+              {keyItem.user?.name || keyItem.user?.email?.split('@')[0] || "User"}
+            </Badge>
+          )}
           <p className="font-semibold text-xs truncate text-white">{keyItem.name}</p>
         </div>
         <div className="flex items-center gap-1.5">

@@ -54,6 +54,7 @@ import { UsersModal } from "@/components/dashboard/users-modal";
 // Premium Views
 import { SecurityView } from "@/components/dashboard/security-view";
 import { ExportImportModal } from "@/components/dashboard/export-import-modal";
+import { AntiCheatGuard } from "@/components/dashboard/anti-cheat-guard";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -546,6 +547,9 @@ export default function DashboardPage() {
 
       {/* Admin Users & IP Management Modal */}
       <UsersModal open={usersModalOpen} onOpenChange={setUsersModalOpen} />
+
+      {/* Anti-Cheat & Fraud Defense Guard */}
+      <AntiCheatGuard />
     </div>
   );
 }

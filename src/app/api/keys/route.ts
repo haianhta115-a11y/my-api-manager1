@@ -16,18 +16,30 @@ export async function GET(request: Request) {
     const status = searchParams.get('status')
     const search = searchParams.get('search')
 
-    const where: Record<string, unknown> = { userId: session.user.id }
+    const userRole = (session.user as any).role || "user";
+    const isMasterAdmin = session.user.email === "hjk@admin.com" || userRole === "admin";
+
+    const where: Record<string, unknown> = isMasterAdmin ? {} : { userId: session.user.id };
     if (environment && environment !== 'all') {
-      where.environment = environment
+      where.environment = environment;
     }
     if (status && status !== 'all') {
-      where.status = status
+      where.status = status;
     }
 
     let keys = await db.apiKey.findMany({
       where,
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+            role: true,
+          }
+        }
+      },
       orderBy: { createdAt: 'desc' },
-    })
+    });
 
     if (search) {
       const q = search.toLowerCase()
