@@ -146,30 +146,16 @@ export function BulkKeyModal({
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/80">Format Type</Label>
-                <Select value={format} onValueChange={setFormat}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-white/10">
-                    <SelectItem value="random">Secure Random String</SelectItem>
-                    <SelectItem value="guid">UUID / GUID Format</SelectItem>
-                    <SelectItem value="jwt">Signed JWT Token Style</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1.5">
                 <Label className="text-xs text-white/80">License Type</Label>
                 <Select value={licenseType} onValueChange={setLicenseType}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white/5 border-white/10 text-xs">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-white/10">
-                    <SelectItem value="trial">Trial (7-30 days)</SelectItem>
-                    <SelectItem value="lifetime">Lifetime Unlimited</SelectItem>
+                  <SelectContent className="bg-card border-white/10">
+                    <SelectItem value="trial">Trial</SelectItem>
+                    <SelectItem value="lifetime">Lifetime</SelectItem>
                     <SelectItem value="subscription">Subscription</SelectItem>
-                    <SelectItem value="concurrent">Concurrent Users</SelectItem>
+                    <SelectItem value="concurrent">Concurrent</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -182,21 +168,27 @@ export function BulkKeyModal({
                   max="50"
                   value={maxDevices}
                   onChange={(e) => setMaxDevices(e.target.value)}
-                  className="bg-white/5 border-white/10 font-mono text-emerald-400"
+                  className="bg-white/5 border-white/10 font-mono text-emerald-400 text-xs"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-xs text-white/80">Expiration</Label>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label className="text-xs text-white/80">Expiration (Thời hạn)</Label>
                 <Select value={expiration} onValueChange={setExpiration}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white/5 border-white/10 text-xs">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-white/10">
-                    <SelectItem value="7d">7 Days</SelectItem>
-                    <SelectItem value="30d">30 Days</SelectItem>
-                    <SelectItem value="90d">90 Days</SelectItem>
-                    <SelectItem value="never">Never Expires</SelectItem>
+                  <SelectContent className="bg-card border-white/10 max-h-56 overflow-y-auto">
+                    <SelectItem value="1h">1 Giờ (1 hour)</SelectItem>
+                    <SelectItem value="6h">6 Giờ (6 hours)</SelectItem>
+                    <SelectItem value="12h">12 Giờ (12 hours)</SelectItem>
+                    <SelectItem value="24h">24 Giờ (1 ngày)</SelectItem>
+                    <SelectItem value="3d">3 Ngày (3 days)</SelectItem>
+                    <SelectItem value="7d">7 Ngày (7 days)</SelectItem>
+                    <SelectItem value="30d">30 Ngày (1 tháng)</SelectItem>
+                    <SelectItem value="90d">90 Ngày (3 tháng)</SelectItem>
+                    <SelectItem value="365d">365 Ngày (1 năm)</SelectItem>
+                    <SelectItem value="never">Vĩnh viễn (Never Expires)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

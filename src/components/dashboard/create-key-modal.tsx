@@ -221,22 +221,22 @@ export function CreateKeyModal({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-white/10 max-h-60 overflow-y-auto">
-                          <SelectItem value="1h">⚡ 1 Giờ (1 hour)</SelectItem>
-                          <SelectItem value="2h">⚡ 2 Giờ (2 hours)</SelectItem>
-                          <SelectItem value="3h">⚡ 3 Giờ (3 hours)</SelectItem>
-                          <SelectItem value="6h">⚡ 6 Giờ (6 hours)</SelectItem>
-                          <SelectItem value="12h">⚡ 12 Giờ (12 hours)</SelectItem>
-                          <SelectItem value="24h">⚡ 24 Giờ (1 ngày)</SelectItem>
-                          <SelectItem value="3d">📅 3 Ngày (3 days)</SelectItem>
-                          <SelectItem value="7d">📅 7 Ngày (7 days)</SelectItem>
-                          <SelectItem value="15d">📅 15 Ngày (15 days)</SelectItem>
-                          <SelectItem value="30d">📅 30 Ngày (1 tháng)</SelectItem>
-                          <SelectItem value="60d">📅 60 Ngày (2 tháng)</SelectItem>
-                          <SelectItem value="90d">📅 90 Ngày (3 tháng)</SelectItem>
-                          <SelectItem value="180d">📅 180 Ngày (6 tháng)</SelectItem>
-                          <SelectItem value="365d">📅 365 Ngày (1 năm)</SelectItem>
-                          <SelectItem value="never">♾️ Vĩnh viễn (Never expires)</SelectItem>
-                          <SelectItem value="custom">⚙️ Tuỳ chỉnh (Custom hours/days/date)</SelectItem>
+                          <SelectItem value="1h">1 Giờ (1 hour)</SelectItem>
+                          <SelectItem value="2h">2 Giờ (2 hours)</SelectItem>
+                          <SelectItem value="3h">3 Giờ (3 hours)</SelectItem>
+                          <SelectItem value="6h">6 Giờ (6 hours)</SelectItem>
+                          <SelectItem value="12h">12 Giờ (12 hours)</SelectItem>
+                          <SelectItem value="24h">24 Giờ (1 ngày)</SelectItem>
+                          <SelectItem value="3d">3 Ngày (3 days)</SelectItem>
+                          <SelectItem value="7d">7 Ngày (7 days)</SelectItem>
+                          <SelectItem value="15d">15 Ngày (15 days)</SelectItem>
+                          <SelectItem value="30d">30 Ngày (1 tháng)</SelectItem>
+                          <SelectItem value="60d">60 Ngày (2 tháng)</SelectItem>
+                          <SelectItem value="90d">90 Ngày (3 tháng)</SelectItem>
+                          <SelectItem value="180d">180 Ngày (6 tháng)</SelectItem>
+                          <SelectItem value="365d">365 Ngày (1 năm)</SelectItem>
+                          <SelectItem value="never">Vĩnh viễn (Never expires)</SelectItem>
+                          <SelectItem value="custom">Tuỳ chỉnh (Custom hours/days/date)</SelectItem>
                         </SelectContent>
                       </Select>
 

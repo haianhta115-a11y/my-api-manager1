@@ -191,32 +191,20 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Role</Label>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-card border-white/10">
-                    <SelectItem value="user">
-                      <span className="flex items-center gap-2">
-                        <Shield className="w-4 h-4" />
-                        User
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="vip">
-                      <span className="flex items-center gap-2">
-                        <Crown className="w-4 h-4 text-amber-400" />
-                        VIP
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="admin">
-                      <span className="flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-emerald-400" />
-                        Admin
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Account Role</Label>
+                <div className="flex items-center gap-2 h-10 px-3 rounded-lg bg-white/5 border border-white/10">
+                  {role === "admin" ? (
+                    <>
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      <span className="text-sm font-bold text-amber-400">Admin (Root Authority)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-4 h-4 text-emerald-400" />
+                      <span className="text-sm font-bold text-emerald-400">VIP User</span>
+                    </>
+                  )}
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Member Since</Label>
