@@ -11,17 +11,11 @@ import {
   VolumeX,
   Volume2,
   SkipForward,
-  ShieldAlert,
   Layers,
   Settings,
-  BarChart3,
   Sparkles,
   Sun,
   Moon,
-  Globe,
-  Lock,
-  Terminal,
-  Webhook as WebhookIcon,
   ShieldCheck,
   Download,
   Music,
@@ -51,20 +45,13 @@ import { EditKeyModal } from "@/components/dashboard/edit-key-modal";
 import { BulkKeyModal } from "@/components/dashboard/bulk-key-modal";
 import { AuditLogsModal } from "@/components/dashboard/audit-logs-modal";
 import { RevokeDialog, DeleteDialog } from "@/components/dashboard/confirm-dialogs";
-import { AnalyticsCharts } from "@/components/dashboard/analytics-charts";
 import { BatchToolbar } from "@/components/dashboard/batch-toolbar";
 import { KeyDetailModal } from "@/components/dashboard/key-detail-modal";
 import { ExpirationModal } from "@/components/dashboard/expiration-modal";
 
 // Premium Views
-import { AnalyticsView } from "@/components/dashboard/analytics-view";
-import { SdkSandboxView } from "@/components/dashboard/sdk-sandbox-view";
-import { WebhooksView } from "@/components/dashboard/webhooks-view";
 import { SecurityView } from "@/components/dashboard/security-view";
 import { ExportImportModal } from "@/components/dashboard/export-import-modal";
-import { IpLookupView } from "@/components/dashboard/ip-lookup-view";
-import { SecurityInspectorView } from "@/components/dashboard/security-inspector-view";
-import { SystemHealthView } from "@/components/dashboard/system-health-view";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -78,7 +65,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<"keys" | "ip-lookup" | "crypto-inspector" | "analytics" | "sandbox" | "webhooks" | "security" | "system">("keys");
+  const [activeTab, setActiveTab] = useState<"keys" | "security">("keys");
 
   // Music State & Custom YouTube player
   const [isMuted, setIsMuted] = useState(false);
@@ -358,12 +345,6 @@ export default function DashboardPage() {
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 pb-2 border-t border-border">
             {[
               { id: "keys", label: "API Keys Grid", icon: KeyRound, count: keys.length },
-              { id: "ip-lookup", label: "Geo-IP & Threat Radar", icon: Globe },
-              { id: "crypto-inspector", label: "HMAC Signature Engine", icon: Lock },
-              { id: "analytics", label: "Analytics & Traffic", icon: BarChart3 },
-              { id: "sandbox", label: "API Sandbox & SDK", icon: Terminal },
-              { id: "webhooks", label: "Webhooks & Automation", icon: WebhookIcon },
-              { id: "system", label: "System Health", icon: ShieldAlert },
               { id: "security", label: "Security Audit & Killswitch", icon: ShieldCheck },
             ].map((tab) => {
               const Icon = tab.icon;
@@ -447,78 +428,6 @@ export default function DashboardPage() {
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
               />
-            </motion.div>
-          )}
-
-          {activeTab === "ip-lookup" && (
-            <motion.div
-              key="ip-lookup-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <IpLookupView />
-            </motion.div>
-          )}
-
-          {activeTab === "crypto-inspector" && (
-            <motion.div
-              key="crypto-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <SecurityInspectorView />
-            </motion.div>
-          )}
-
-          {activeTab === "analytics" && (
-            <motion.div
-              key="analytics-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <AnalyticsView />
-            </motion.div>
-          )}
-
-          {activeTab === "sandbox" && (
-            <motion.div
-              key="sandbox-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <SdkSandboxView />
-            </motion.div>
-          )}
-
-          {activeTab === "webhooks" && (
-            <motion.div
-              key="webhooks-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <WebhooksView />
-            </motion.div>
-          )}
-
-          {activeTab === "system" && (
-            <motion.div
-              key="system-tab"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <SystemHealthView />
             </motion.div>
           )}
 

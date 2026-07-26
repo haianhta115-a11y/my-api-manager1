@@ -18,14 +18,26 @@ export function ExportImportModal({ open, onOpenChange, onImportComplete }: Expo
   const [importJson, setImportJson] = useState("");
   const [isImporting, setIsImporting] = useState(false);
 
-  const handleExportCsv = () => {
-    window.open("/api/keys/export?format=csv", "_blank");
-    toast.success("CSV Export started!");
-  };
-
-  const handleExportJson = () => {
-    window.open("/api/keys/export?format=json", "_blank");
-    toast.success("JSON Backup started!");
+  const handleExport = async (format: "csv" | "json") => {
+    try {
+      const res = await fetch(`/api/keys/export?format=${format}`);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Export failed" }));
+        throw new Error(err.error || `Export failed (${res.status})`);
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `api-keys-backup.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(`${format.toUpperCase()} export downloaded!`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Export failed");
+    }
   };
 
   const handleImportSubmit = async () => {
@@ -88,7 +100,7 @@ export function ExportImportModal({ open, onOpenChange, onImportComplete }: Expo
             </h4>
             <div className="grid grid-cols-2 gap-3">
               <Button
-                onClick={handleExportCsv}
+                onClick={() => handleExport("csv")}
                 variant="outline"
                 className="bg-white/5 border-white/10 hover:bg-white/10 text-xs gap-2"
               >
@@ -96,7 +108,7 @@ export function ExportImportModal({ open, onOpenChange, onImportComplete }: Expo
                 Export to CSV
               </Button>
               <Button
-                onClick={handleExportJson}
+                onClick={() => handleExport("json")}
                 variant="outline"
                 className="bg-white/5 border-white/10 hover:bg-white/10 text-xs gap-2"
               >
