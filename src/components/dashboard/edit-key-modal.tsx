@@ -158,36 +158,6 @@ export function EditKeyModal({
                   />
                 </div>
 
-                {/* Permissions */}
-                <div className="space-y-2">
-                  <Label>Permissions</Label>
-                  <Select value={permissions} onValueChange={setPermissions}>
-                    <SelectTrigger className="bg-white/5 border-white/10 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
-                      <SelectItem value="read">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                          Read — Data access only
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="write">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-sky-400" />
-                          Write — Read + mutations
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="admin">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-purple-400" />
-                          Admin — Full access
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 {/* License Type */}
                 <div className="space-y-2">
                   <Label>License Type</Label>
@@ -219,39 +189,6 @@ export function EditKeyModal({
                   <p className="text-xs text-muted-foreground">
                     Number of devices allowed per key
                   </p>
-                </div>
-
-
-                {/* Rate Limit */}
-                <div className="space-y-2">
-                  <Label htmlFor="edit-rate-limit">Rate Limit (requests/min)</Label>
-                  <Input
-                    id="edit-rate-limit"
-                    type="number"
-                    min="1"
-                    max="10000"
-                    value={rateLimit}
-                    onChange={(e) => setRateLimit(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 font-mono-key"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Max 10,000 requests per minute
-                  </p>
-                </div>
-
-                {/* Environment */}
-                <div className="space-y-2">
-                  <Label>Environment</Label>
-                  <Select value={environment} onValueChange={setEnvironment}>
-                    <SelectTrigger className="bg-white/5 border-white/10 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
-                      <SelectItem value="production">Production</SelectItem>
-                      <SelectItem value="staging">Staging</SelectItem>
-                      <SelectItem value="development">Development</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 {/* Tags */}

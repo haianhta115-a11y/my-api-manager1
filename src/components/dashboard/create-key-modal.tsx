@@ -199,36 +199,20 @@ export function CreateKeyModal({
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Name & Environment Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="key-name" className="text-xs">Key Name</Label>
-                      <Input
-                        id="key-name"
-                        placeholder="e.g. Production API v2"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="bg-white/5 border-white/10 text-xs"
-                        autoFocus
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">Target Environment</Label>
-                      <Select value={environment} onValueChange={setEnvironment}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-white/10">
-                          <SelectItem value="production">Production (sk_live_)</SelectItem>
-                          <SelectItem value="staging">Staging (sk_stg_)</SelectItem>
-                          <SelectItem value="development">Development (sk_test_)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {/* Name Input */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="key-name" className="text-xs">Key Name</Label>
+                    <Input
+                      id="key-name"
+                      placeholder="e.g. Production API v2"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="bg-white/5 border-white/10 text-xs"
+                      autoFocus
+                    />
                   </div>
 
-                  {/* Expiration & Permissions Row */}
+                  {/* Expiration & License Model Row */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label className="text-xs font-medium">Expiration (Thời hạn)</Label>
@@ -294,23 +278,6 @@ export function CreateKeyModal({
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label className="text-xs">Permissions</Label>
-                      <Select value={permissions} onValueChange={setPermissions}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-white/10">
-                          <SelectItem value="read">Read — Access only</SelectItem>
-                          <SelectItem value="write">Write — Read + Mutations</SelectItem>
-                          <SelectItem value="admin">Admin — Full Root Control</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* License Type & Max Devices Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
                       <Label className="text-xs">License Model</Label>
                       <Select value={licenseType} onValueChange={setLicenseType}>
                         <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
@@ -324,7 +291,10 @@ export function CreateKeyModal({
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
 
+                  {/* Max Devices & Allowed IPs Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label htmlFor="max-devices" className="text-xs">Max Devices (HWID)</Label>
                       <Input
@@ -334,22 +304,6 @@ export function CreateKeyModal({
                         max="100"
                         value={maxDevices}
                         onChange={(e) => setMaxDevices(e.target.value)}
-                        className="bg-white/5 border-white/10 text-xs font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Rate Limit & IP Whitelist Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="rate-limit" className="text-xs">Rate Limit (req/min)</Label>
-                      <Input
-                        id="rate-limit"
-                        type="number"
-                        min="1"
-                        max="10000"
-                        value={rateLimit}
-                        onChange={(e) => setRateLimit(e.target.value)}
                         className="bg-white/5 border-white/10 text-xs font-mono"
                       />
                     </div>
