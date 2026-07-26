@@ -89,23 +89,6 @@
   --ring: oklch(0.42 0.20 162);
 }
 
-/* ── Light Theme High-Contrast Overrides ── */
-.light .text-white {
-  color: oklch(0.10 0.02 240) !important;
-}
-
-.light .text-white\/90, .light .text-white\/80 {
-  color: oklch(0.15 0.02 240) !important;
-}
-
-.light .text-white\/70, .light .text-white\/60 {
-  color: oklch(0.25 0.02 240) !important;
-}
-
-.light .text-white\/40, .light .text-white\/50 {
-  color: oklch(0.35 0.02 240) !important;
-}
-
 /* High Contrast Accent Text Colors for Light Mode */
 .light .text-emerald-400, .light .text-emerald-300 {
   color: oklch(0.38 0.18 160) !important;
