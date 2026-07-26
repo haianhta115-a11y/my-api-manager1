@@ -258,62 +258,7 @@ export default function SettingsPage() {
           </form>
         </motion.div>
 
-        {/* VIP Subscription Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="glass rounded-xl p-6 mb-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-emerald-500/5 to-amber-500/5 pointer-events-none" />
-          <div className="relative">
-            <h2 className="text-lg font-semibold flex items-center gap-2 mb-6">
-              <Crown className="w-4 h-4 text-amber-400" />
-              VIP Subscription
-            </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>Plan</Label>
-                <div className="flex items-center gap-2 h-10 px-3 rounded-lg bg-gradient-to-r from-amber-500/10 to-emerald-500/10 border border-amber-500/20">
-                  <Crown className="w-4 h-4 text-amber-400" />
-                  <span className="text-sm font-semibold bg-gradient-to-r from-amber-400 to-emerald-400 bg-clip-text text-transparent">
-                    {role === "admin" || role === "vip" ? "VIP Enterprise" : "Free"}
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <div className="flex items-center gap-2 h-10 px-3 rounded-lg bg-white/5 border border-white/10">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
-                  <span className="text-sm text-emerald-400 font-medium">Active</span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Daily Request Limit</Label>
-                <div className="flex items-center gap-2 h-10 px-3 rounded-lg bg-white/5 border border-white/10">
-                  < Zap className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-mono">
-                    {role === "admin" || role === "vip" ? "Unlimited" : "1,000"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <Separator className="bg-white/10 my-4" />
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                All features unlocked — enjoy premium access
-              </div>
-              <Button variant="outline" size="sm" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 text-xs h-8">
-                <Shield className="w-3 h-3 mr-1" />
-                Manage Subscription
-              </Button>
-            </div>
-          </div>
-        </motion.div>
 
         {/* Password Section */}
         <motion.div

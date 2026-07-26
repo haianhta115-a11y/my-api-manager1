@@ -9,7 +9,8 @@ interface VipBadgeProps {
 }
 
 export function VipBadge({ role = "user", email }: VipBadgeProps) {
-  const isVip = role === "admin" || role === "vip";
+  const isAdmin = role === "admin" || email === "hjk@admin.com";
+  const isVip = role === "vip";
 
   return (
     <motion.div
@@ -19,12 +20,14 @@ export function VipBadge({ role = "user", email }: VipBadgeProps) {
     >
       <div className={`
         flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300
-        ${isVip
+        ${isAdmin
           ? "bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-amber-500/15 border-amber-500/30 shadow-[0_0_15px_rgba(251,191,36,0.15)]"
+          : isVip
+          ? "bg-emerald-500/10 border-emerald-500/30"
           : "bg-white/5 border-white/10"
         }
       `}>
-        {isVip ? (
+        {isAdmin ? (
           <>
             <div className="relative">
               <Crown className="w-3.5 h-3.5 text-amber-400" />
@@ -35,15 +38,22 @@ export function VipBadge({ role = "user", email }: VipBadgeProps) {
               />
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-400 bg-clip-text text-transparent">
-              VIP Admin
+              Admin Master
             </span>
             <Sparkles className="w-3 h-3 text-amber-400/70" />
           </>
+        ) : isVip ? (
+          <>
+            <Crown className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+              VIP User
+            </span>
+          </>
         ) : (
           <>
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              {role}
+            <Shield className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-[10px] font-medium text-sky-300 uppercase tracking-wider">
+              Normal User
             </span>
           </>
         )}

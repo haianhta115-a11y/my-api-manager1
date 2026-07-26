@@ -69,9 +69,6 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Tab State
-  const [activeTab, setActiveTab] = useState<"keys" | "security">("keys");
-
   // Music State & Custom YouTube player
   const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
@@ -333,7 +330,7 @@ export default function DashboardPage() {
               </Link>
 
               <div className="hidden sm:flex items-center gap-2 mr-2">
-                <VipBadge role="admin" email={session?.user?.email} />
+                <VipBadge role={(session?.user as any)?.role} email={session?.user?.email} />
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent border border-border">
                   <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
                     <User className="w-3.5 h-3.5 text-emerald-400" />
