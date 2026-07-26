@@ -46,6 +46,33 @@ export function ExpirationModal({ open, onOpenChange, keyItem, onExtended }: Exp
     return `Expires in ${days}d ${hours}h ${mins}m`;
   };
 
+  const handleExtendHours = async (hoursToAdd: number) => {
+    setLoading(true);
+    try {
+      const base = expiresDate && expiresDate > now ? expiresDate : now;
+      const newExp = new Date(base.getTime() + hoursToAdd * 60 * 60 * 1000);
+
+      const res = await fetch(`/api/keys/${keyItem.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          expiresAt: newExp.toISOString(),
+          status: "active",
+          expiration: `${hoursToAdd}h`,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to extend expiration");
+      toast.success(`Extended key '${keyItem.name}' by +${hoursToAdd} hours!`);
+      onExtended();
+      onOpenChange(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to extend expiration");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleExtendDays = async (daysToAdd: number) => {
     setLoading(true);
     try {
@@ -162,6 +189,44 @@ export function ExpirationModal({ open, onOpenChange, keyItem, onExtended }: Exp
           {/* Quick Extension Presets */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground uppercase tracking-wider">Quick Extensions</Label>
+            <div className="grid grid-cols-4 gap-1.5 mb-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleExtendHours(1)}
+                disabled={loading}
+                className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-amber-400"
+              >
+                +1 Giờ
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleExtendHours(6)}
+                disabled={loading}
+                className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-amber-400"
+              >
+                +6 Giờ
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleExtendHours(12)}
+                disabled={loading}
+                className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-amber-400"
+              >
+                +12 Giờ
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleExtendHours(24)}
+                disabled={loading}
+                className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-amber-400"
+              >
+                +24 Giờ
+              </Button>
+            </div>
             <div className="grid grid-cols-3 gap-2">
               <Button
                 variant="outline"
@@ -170,7 +235,7 @@ export function ExpirationModal({ open, onOpenChange, keyItem, onExtended }: Exp
                 disabled={loading}
                 className="bg-white/5 border-white/10 hover:bg-white/10 text-xs"
               >
-                +7 Days
+                +7 Ngày
               </Button>
               <Button
                 variant="outline"
@@ -179,7 +244,7 @@ export function ExpirationModal({ open, onOpenChange, keyItem, onExtended }: Exp
                 disabled={loading}
                 className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-emerald-400"
               >
-                +30 Days
+                +30 Ngày
               </Button>
               <Button
                 variant="outline"
@@ -188,7 +253,7 @@ export function ExpirationModal({ open, onOpenChange, keyItem, onExtended }: Exp
                 disabled={loading}
                 className="bg-white/5 border-white/10 hover:bg-white/10 text-xs text-purple-400"
               >
-                +1 Year
+                +1 Năm
               </Button>
             </div>
           </div>

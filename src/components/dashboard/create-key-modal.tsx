@@ -63,6 +63,11 @@ export function CreateKeyModal({
   const [tags, setTags] = useState("");
   const [notes, setNotes] = useState("");
 
+  // Custom Expiration state
+  const [customVal, setCustomVal] = useState("1");
+  const [customUnit, setCustomUnit] = useState<"h" | "d" | "datetime">("h");
+  const [customDateTime, setCustomDateTime] = useState("");
+
   const [createdKey, setCreatedKey] = useState<CreatedKeyData | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -77,6 +82,9 @@ export function CreateKeyModal({
     setAllowedIps("");
     setTags("");
     setNotes("");
+    setCustomVal("1");
+    setCustomUnit("h");
+    setCustomDateTime("");
     setCreatedKey(null);
     setCopied(false);
   };
@@ -84,6 +92,17 @@ export function CreateKeyModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+
+    let finalExpiration = expiration;
+    if (expiration === "custom") {
+      if (customUnit === "h") {
+        finalExpiration = `${customVal}h`;
+      } else if (customUnit === "d") {
+        finalExpiration = `${customVal}d`;
+      } else if (customUnit === "datetime" && customDateTime) {
+        finalExpiration = new Date(customDateTime).toISOString();
+      }
+    }
 
     setIsCreating(true);
     try {
@@ -93,7 +112,7 @@ export function CreateKeyModal({
         body: JSON.stringify({
           name: name.trim(),
           environment,
-          expiration,
+          expiration: finalExpiration,
           permissions,
           rateLimit: parseInt(rateLimit) || 60,
           licenseType,
@@ -212,18 +231,66 @@ export function CreateKeyModal({
                   {/* Expiration & Permissions Row */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label className="text-xs">Expiration</Label>
+                      <Label className="text-xs font-medium">Expiration (Thời hạn)</Label>
                       <Select value={expiration} onValueChange={setExpiration}>
                         <SelectTrigger className="bg-white/5 border-white/10 text-xs w-full">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-card border-white/10">
-                          <SelectItem value="7d">7 days</SelectItem>
-                          <SelectItem value="30d">30 days</SelectItem>
-                          <SelectItem value="90d">90 days</SelectItem>
-                          <SelectItem value="never">Never expires</SelectItem>
+                        <SelectContent className="bg-card border-white/10 max-h-60 overflow-y-auto">
+                          <SelectItem value="1h">⚡ 1 Giờ (1 hour)</SelectItem>
+                          <SelectItem value="2h">⚡ 2 Giờ (2 hours)</SelectItem>
+                          <SelectItem value="3h">⚡ 3 Giờ (3 hours)</SelectItem>
+                          <SelectItem value="6h">⚡ 6 Giờ (6 hours)</SelectItem>
+                          <SelectItem value="12h">⚡ 12 Giờ (12 hours)</SelectItem>
+                          <SelectItem value="24h">⚡ 24 Giờ (1 ngày)</SelectItem>
+                          <SelectItem value="3d">📅 3 Ngày (3 days)</SelectItem>
+                          <SelectItem value="7d">📅 7 Ngày (7 days)</SelectItem>
+                          <SelectItem value="15d">📅 15 Ngày (15 days)</SelectItem>
+                          <SelectItem value="30d">📅 30 Ngày (1 tháng)</SelectItem>
+                          <SelectItem value="60d">📅 60 Ngày (2 tháng)</SelectItem>
+                          <SelectItem value="90d">📅 90 Ngày (3 tháng)</SelectItem>
+                          <SelectItem value="180d">📅 180 Ngày (6 tháng)</SelectItem>
+                          <SelectItem value="365d">📅 365 Ngày (1 năm)</SelectItem>
+                          <SelectItem value="never">♾️ Vĩnh viễn (Never expires)</SelectItem>
+                          <SelectItem value="custom">⚙️ Tuỳ chỉnh (Custom hours/days/date)</SelectItem>
                         </SelectContent>
                       </Select>
+
+                      {expiration === "custom" && (
+                        <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-2 mt-2">
+                          <Label className="text-[11px] text-emerald-400 font-semibold">Cấu hình thời hạn tuỳ chỉnh</Label>
+                          <div className="flex gap-2">
+                            <Select value={customUnit} onValueChange={(v) => setCustomUnit(v as "h" | "d" | "datetime")}>
+                              <SelectTrigger className="bg-white/5 border-white/10 text-xs w-28 shrink-0">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-card border-white/10">
+                                <SelectItem value="h">Giờ (Hours)</SelectItem>
+                                <SelectItem value="d">Ngày (Days)</SelectItem>
+                                <SelectItem value="datetime">Ngày & Giờ</SelectItem>
+                              </SelectContent>
+                            </Select>
+
+                            {customUnit === "datetime" ? (
+                              <Input
+                                type="datetime-local"
+                                value={customDateTime}
+                                onChange={(e) => setCustomDateTime(e.target.value)}
+                                className="bg-white/5 border-white/10 text-xs flex-1"
+                              />
+                            ) : (
+                              <Input
+                                type="number"
+                                min="1"
+                                value={customVal}
+                                onChange={(e) => setCustomVal(e.target.value)}
+                                placeholder={customUnit === "h" ? "Nhập số giờ..." : "Nhập số ngày..."}
+                                className="bg-white/5 border-white/10 text-xs flex-1 font-mono"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="space-y-1.5">

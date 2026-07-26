@@ -87,14 +87,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const validExpiration = ['7d', '30d', '90d', 'never']
-    if (!validExpiration.includes(expiration)) {
-      return NextResponse.json(
-        { error: 'Invalid expiration. Must be: 7d, 30d, 90d, or never' },
-        { status: 400 }
-      )
-    }
-
     const validLicenseTypes = ['trial', 'lifetime', 'subscription', 'concurrent']
     if (!validLicenseTypes.includes(licenseType)) {
       return NextResponse.json(
@@ -115,12 +107,29 @@ export async function POST(request: Request) {
     const fullKey = `${keyPrefix}${randomPart}`
     const keySuffix = fullKey.slice(-4)
 
-    // Calculate expiration date
+    // Calculate flexible expiration date (supports hours, days, custom dates, never)
     let expiresAt: Date | null = null
-    if (expiration !== 'never') {
-      const days = parseInt(expiration)
-      expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + days)
+    if (expiration && expiration !== 'never') {
+      const str = String(expiration).trim();
+      if (str.endsWith('h')) {
+        const hours = parseFloat(str.slice(0, -1));
+        if (!isNaN(hours) && hours > 0) expiresAt = new Date(Date.now() + Math.round(hours * 3600 * 1000));
+      } else if (str.endsWith('m')) {
+        const mins = parseFloat(str.slice(0, -1));
+        if (!isNaN(mins) && mins > 0) expiresAt = new Date(Date.now() + Math.round(mins * 60 * 1000));
+      } else if (str.endsWith('d')) {
+        const days = parseFloat(str.slice(0, -1));
+        if (!isNaN(days) && days > 0) expiresAt = new Date(Date.now() + Math.round(days * 24 * 3600 * 1000));
+      } else if (str.endsWith('y')) {
+        const years = parseFloat(str.slice(0, -1));
+        if (!isNaN(years) && years > 0) expiresAt = new Date(Date.now() + Math.round(years * 365 * 24 * 3600 * 1000));
+      } else if (!isNaN(parseFloat(str)) && !str.includes('-') && !str.includes('T')) {
+        const days = parseFloat(str);
+        if (days > 0) expiresAt = new Date(Date.now() + Math.round(days * 24 * 3600 * 1000));
+      } else {
+        const parsedDate = new Date(str);
+        if (!isNaN(parsedDate.getTime())) expiresAt = parsedDate;
+      }
     }
 
     const apiKey = await db.apiKey.create({

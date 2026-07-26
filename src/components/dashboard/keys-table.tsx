@@ -208,15 +208,19 @@ function KeyRow({
         <div className="flex items-center gap-1.5">
           <Badge
             variant="outline"
-            className={`text-[9px] px-1 py-0 h-3.5 ${
+            className={`text-[9px] px-1.5 py-0.5 h-4 font-bold capitalize ${
               keyItem.licenseType === "lifetime" || keyItem.licenseType === "enterprise"
-                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
                 : keyItem.licenseType === "subscription"
-                ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                : "bg-white/5 text-muted-foreground border-white/10"
+                ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                : keyItem.licenseType === "trial"
+                ? "bg-purple-500/20 text-purple-300 border-purple-500/40"
+                : keyItem.licenseType === "concurrent"
+                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                : "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
             }`}
           >
-            {keyItem.licenseType === "lifetime" && <Crown className="w-2 h-2 mr-0.5" />}
+            {keyItem.licenseType === "lifetime" && <Crown className="w-2.5 h-2.5 mr-0.5" />}
             {keyItem.licenseType}
           </Badge>
           {tagsList.length > 0 && (
